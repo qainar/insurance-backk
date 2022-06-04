@@ -24,7 +24,7 @@ router.post('/login', userController.login)
 router.post('/logout', userController.logout)
 router.get('/activate/:link', userController.activate)
 router.get('/refresh', userController.refresh)
-router.get('/users', AuthMiddleware ,userController.getUsers)
+router.get('/profile', AuthMiddleware ,userController.profile)
 
 //property
 router.post('/property', AuthMiddleware, propertyController.create)

@@ -12,14 +12,14 @@ const mailService = new MailService()
 const apiError = new ApiError()
 
 export class UserService{
-    async registration(email, name, password, number){
+    async registration(IIN,email, password, name, number){
         const candidate = await UserSchema.findOne({email})
         if (candidate){
             throw ApiError.BadRequest('Пользователь с таким email-ом' + email + 'уже существует. Выберите другую почту')
         }
         const hashPassword = await bcrypt.hash(password, 3)
         const activationLink = v4()
-        const user = await UserSchema.create({email, name, number, password: hashPassword, activationLink})
+        const user = await UserSchema.create({IIN,email, name, number, password: hashPassword, activationLink})
         await mailService.sendActivationLink(email,`${process.env.API_URL}/api/activate/${activationLink}`)
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})

@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 import router from './router/index.js'
 import ErrorMiddleware from "./middlewares/error-middleware.js";
 const app = express()
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5304
 
 
 
