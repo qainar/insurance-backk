@@ -21,4 +21,12 @@ export class CarController{
             next(e)
         }
     }
+    async getAll(req,res,next){
+        try {
+            const data = await carModel.find({})
+            return res.json(data)
+        }catch (e) {
+            next(e)
+        }
+    }
 }

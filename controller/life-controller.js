@@ -1,6 +1,7 @@
 import UserSchema from "../models/user-model.js";
 import {ObjectId} from "mongodb";
 import {LifeService} from "../service/lifeService.js";
+import lifeModel from "../models/lifeModel.js";
 
 const lifeService = new LifeService()
 export class LifeController{
@@ -19,6 +20,14 @@ export class LifeController{
             return res.json(data)
         }
         catch (e) {
+            next(e)
+        }
+    }
+    async getAll(req,res,next){
+        try {
+            const data = await lifeModel.find({})
+            return res.json(data)
+        }catch (e) {
             next(e)
         }
 
