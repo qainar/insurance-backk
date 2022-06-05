@@ -66,7 +66,7 @@ export class UserController{
     async profile(req,res,next){
         try {
             console.log(req.headers.authorization)
-            const {accessToken} = req.headers.authorization
+            const accessToken = req.headers.authorization.split(' ')[1]
             const userData = await userService.profile(accessToken)
             res.cookie('accessToken', userData.accessToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData)
