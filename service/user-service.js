@@ -82,7 +82,7 @@ export class UserService {
             throw ApiError.UnauthorizedError()
         }
         const userData = await tokenService.validateAccessToken(accessToken)
-
+        console.log(userData)
         if (!userData) {
             throw ApiError.UnauthorizedError()
         }
