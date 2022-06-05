@@ -7,7 +7,9 @@ export class CarController{
     async create(req,res,next){
         try {
             const data = await carService.create(req.body)
+            console.log(data)
             return res.json(data)
+
         }catch (e) {
             next(e)
         }
