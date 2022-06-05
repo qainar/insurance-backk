@@ -25,7 +25,8 @@ export class LifeController{
     }
     async getAll(req,res,next){
         try {
-            const data = await lifeModel.find({})
+            const {userId} = req.query
+            const data = await lifeModel.find({userId: userId})
             return res.json(data)
         }catch (e) {
             next(e)

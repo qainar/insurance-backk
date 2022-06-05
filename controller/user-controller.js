@@ -71,7 +71,7 @@ export class UserController {
             const userData = await userService.profile(accessToken)
             res.cookie('accessToken', userData.accessToken, {maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true})
             return res.json(userData)
-        } catch (e) {
+        }catch (e) {
             next(e)
         }
     }

@@ -27,7 +27,8 @@ export class PropertyController{
     }
     async getAll(req,res,next){
         try {
-            const data = await property.find({})
+            const {userId} = req.query
+            const data = await property.find({userId: userId})
             return res.json(data)
         }catch (e) {
             next(e)
