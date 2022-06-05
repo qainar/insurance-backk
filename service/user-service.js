@@ -11,39 +11,39 @@ const tokenService = new TokenService()
 const mailService = new MailService()
 const apiError = new ApiError()
 
-export class UserService{
-    async registration(IIN,email, password, name, number){
+export class UserService {
+    async registration(IIN, email, password, name, number) {
         const candidate = await UserSchema.findOne({email})
-        if (candidate){
+        if (candidate) {
             throw ApiError.BadRequest('Пользователь с таким email-ом' + email + 'уже существует. Выберите другую почту')
         }
         const hashPassword = await bcrypt.hash(password, 3)
         const activationLink = v4()
-        const user = await UserSchema.create({IIN,email, name, number, password: hashPassword, activationLink})
-        await mailService.sendActivationLink(email,`${process.env.API_URL}/api/activate/${activationLink}`)
+        const user = await UserSchema.create({IIN, email, password: hashPassword, name, number, activationLink})
+        await mailService.sendActivationLink(email, `${process.env.API_URL}/api/activate/${activationLink}`)
         const userDto = new UserDto(user)
         const tokens = tokenService.generateTokens({...userDto})
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return{...tokens, user: userDto}
+        return {...tokens, user: userDto}
     }
 
-    async activate(activationLink){
+    async activate(activationLink) {
         const user = await UserSchema.findOne({activationLink})
-        if (!user){
+        if (!user) {
             throw ApiError.BadRequest('Неправильная ссылка')
         }
         user.isActivated = true
         await user.save()
     }
 
-    async login(email, password){
+    async login(email, password) {
         const user = await UserSchema.findOne({email})
-        if (!user){
+        if (!user) {
             throw ApiError.BadRequest('Пользователь не найден')
         }
         const isPassEquals = await bcrypt.compare(password, user.password)
-        if (!isPassEquals){
+        if (!isPassEquals) {
             throw ApiError.BadRequest('Неправильный пароль')
         }
         const userDto = new UserDto(user)
@@ -51,22 +51,22 @@ export class UserService{
 
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
 
-        return{...tokens, user: userDto}
+        return {...tokens, user: userDto}
     }
 
-    async logout(refreshToken){
+    async logout(refreshToken) {
         const token = await tokenService.removeToken(refreshToken)
         return token
     }
 
-    async refresh(refreshToken){
-        if (!refreshToken){
+    async refresh(refreshToken) {
+        if (!refreshToken) {
             throw ApiError.UnauthorizedError()
         }
         const userData = await tokenService.validateRefreshToken(refreshToken)
         const tokenFromDb = tokenService.findToken(refreshToken)
 
-        if (!userData || !tokenFromDb){
+        if (!userData || !tokenFromDb) {
             throw ApiError.UnauthorizedError()
         }
         const user = await UserSchema.findById(userData.id)
@@ -74,10 +74,24 @@ export class UserService{
         const tokens = tokenService.generateTokens({...userDto})
 
         await tokenService.saveToken(userDto.id, tokens.refreshToken)
-        return{...tokens, user: userDto}
+        return {...tokens, user: userDto}
     }
 
-    async getUser(){
+    async profile(accessToken) {
+        if (!accessToken) {
+            throw ApiError.UnauthorizedError()
+        }
+        const userData = await tokenService.validateAccessToken(accessToken)
+
+        if (!userData) {
+            throw ApiError.UnauthorizedError()
+        }
+        const user = await UserSchema.findById(userData.id)
+        const userDto = new UserDto(user)
+        return userDto
+    }
+
+    async getUser() {
         const users = await UserSchema.find()
         return users
     }

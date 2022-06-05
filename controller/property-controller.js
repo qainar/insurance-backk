@@ -25,4 +25,12 @@ export class PropertyController{
             next(e)
         }
     }
+    async getAll(req,res,next){
+        try {
+            const data = await property.find({})
+            return res.json(data)
+        }catch (e) {
+            next(e)
+        }
+    }
 }
