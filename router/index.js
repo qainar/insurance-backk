@@ -37,7 +37,7 @@ router.get('/', AuthMiddleware, propertyController.getAll)
 //car
 router.post('/car', AuthMiddleware, carController.create)
 router.get('/car/:id', AuthMiddleware, carController.getOne)
-router.get('/', AuthMiddleware, carController.getAll)
+router.get('/car', AuthMiddleware, carController.getAll)
 
 //life
 router.post('/life', AuthMiddleware, lifeController.create)

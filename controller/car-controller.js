@@ -23,7 +23,8 @@ export class CarController{
     }
     async getAll(req,res,next){
         try {
-            const data = await carModel.find({})
+            const { userId } = req.query
+            const data = await carModel.find({userId: userId})
             return res.json(data)
         }catch (e) {
             next(e)
