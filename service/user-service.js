@@ -5,6 +5,9 @@ import {TokenService} from "./token-service.js";
 import {MailService} from "./mail-service.js";
 import {UserDto} from "../dtos/user-dto.js";
 import {ApiError} from "../exceptions/api-error.js";
+import CarModel from "../models/carModel.js";
+import LifeModel from "../models/lifeModel.js";
+import Property from "../models/property.js";
 
 
 const tokenService = new TokenService()
@@ -94,5 +97,20 @@ export class UserService {
     async getUser() {
         const users = await UserSchema.find()
         return users
+    }
+
+    async allInsurance(accessToken) {
+        if (!accessToken) {
+            throw ApiError.UnauthorizedError()
+        }
+        const userData = await tokenService.validateAccessToken(accessToken)
+        if (!userData) {
+            throw ApiError.UnauthorizedError()
+        }
+        const carsInsurance = await CarModel.find({userId: userData.id})
+        const lifeInsurance = await LifeModel.find({userId: userData.id})
+        const propertyInsurance = await Property.find({userId: userData.id})
+        console.log([...carsInsurance, ...lifeInsurance, ...propertyInsurance])
+        return [...carsInsurance, ...lifeInsurance, ...propertyInsurance]
     }
 }

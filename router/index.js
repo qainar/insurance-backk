@@ -29,6 +29,9 @@ router.get('/profile', userController.profile)
 router.get('/users', AuthMiddleware ,userController.getUsers)
 
 
+//all insurance
+router.get('/insurances', userController.allInsurance)
+
 //property
 router.post('/property', AuthMiddleware, propertyController.create)
 router.get('/property/:id', AuthMiddleware, propertyController.getOne)
